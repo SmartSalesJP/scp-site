@@ -948,9 +948,11 @@
     resize();
     window.addEventListener("resize", resize, { passive: true });
 
-    /* --- カーソル追従(慣性) --- */
+    /* --- カーソル追従(慣性) ---
+       finePointer なら常にリスナを張り、追従の「適用」はループ側で
+       reduceMotion を見て判断する(設定変更にライブ追従できるように)。 */
     var targetRX = 0, targetRY = 0, curRX = 0, curRY = 0;
-    if (finePointer && !reduceMotion) {
+    if (finePointer) {
       window.addEventListener("pointermove", function (e) {
         var nx = (e.clientX / window.innerWidth) * 2 - 1;
         var ny = (e.clientY / window.innerHeight) * 2 - 1;
@@ -959,38 +961,65 @@
       }, { passive: true });
     }
 
-    /* --- reduced motion: 一度だけ静的に描画 --- */
-    if (reduceMotion) {
-      displace(12.34);
-      mesh.rotation.set(0.5, 0.7, 0);
-      resize();
-      renderer.render(scene, camera);
-      return;
+    /* --- reduced motion 用: 一度だけ変位させ結晶のシルエットを作る ---
+       (毎フレームの変形=モーフィングは止めるが、形は静的に確定させる) */
+    var displacedForIdle = false;
+    function ensureIdleShape() {
+      if (displacedForIdle) return;
+      displace(12.34);          // 落ち着いた位相で1回だけ変位
+      displacedForIdle = true;
     }
+    if (reduceMotion) { ensureIdleShape(); mesh.rotation.set(0.32, 0.55, 0); }
 
-    /* --- 可視状態・タブ状態で描画を制御 (性能) --- */
-    var visible = true, rafId = null;
+    /* --- ループ制御 ---
+       不変条件: 同時に走るループは常にちょうど1つ(rafId で一意管理)。
+       可視(ビューポート内)かつタブ表示中のときだけ回す。 */
+    var inViewport = true, rafId = null;
+
+    function shouldRun() { return inViewport && !document.hidden; }
+    function startLoop() {
+      if (rafId !== null) return;          // 二重起動防止(再入防止)
+      lastT = performance.now();           // 再開時の dt 暴発を防ぐ
+      acc = 0;
+      rafId = requestAnimationFrame(loop);
+    }
+    function stopLoop() {
+      if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+    }
+    function syncLoop() { if (shouldRun()) startLoop(); else stopLoop(); }
+
     if ("IntersectionObserver" in window) {
       new IntersectionObserver(function (entries) {
-        visible = entries[0].isIntersecting;
-        if (visible && rafId === null) loop(lastT);
+        inViewport = entries[0].isIntersecting;
+        syncLoop();
       }, { threshold: 0 }).observe(visual);
     }
-    document.addEventListener("visibilitychange", function () {
-      if (document.hidden) { if (rafId) { cancelAnimationFrame(rafId); rafId = null; } }
-      else if (visible && rafId === null) { loop(lastT); }
-    });
+    document.addEventListener("visibilitychange", syncLoop);
 
-    /* --- メインループ: FPS制御つき --- */
+    /* --- メインループ: FPS制御つき ---
+       通常時:  変位モーフ + 自転 + カーソル追従 + スクロール退場。
+       reduce時: 穏やかで等速のアイドル回転のみ(変位・視差・スクロール連動なし)。 */
     var t = 0, lastT = 0, acc = 0;
     var frameInterval = isMobile() ? 1000 / 30 : 1000 / 45;
+    var IDLE_SPIN = 0.0011;   // reduce時の角速度(通常の自転より遅い等速回転)
+
     function loop(now) {
-      rafId = requestAnimationFrame(loop);
-      if (!visible) { rafId = null; return; }
+      if (!shouldRun()) { rafId = null; return; }   // 早期returnでは必ず rafId を落とす
+      rafId = requestAnimationFrame(loop);          // 継続する時だけ次フレームを予約
       var dt = now - lastT; lastT = now;
       acc += dt;
       if (acc < frameInterval) return;
       acc = 0;
+
+      if (reduceMotion) {
+        // 穏やかな等速アイドル回転のみ。めまいを誘発する視差・変形はしない。
+        ensureIdleShape();
+        group.position.y = isMobile() ? 0.15 : 0;   // スクロール連動を無効化(定位置)
+        visual.style.opacity = "1";
+        mesh.rotation.y += IDLE_SPIN;
+        renderer.render(scene, camera);
+        return;
+      }
 
       t += 0.0022 * (isMobile() ? 0.8 : 1);
       displace(t);
@@ -1013,8 +1042,24 @@
 
       renderer.render(scene, camera);
     }
-    lastT = performance.now();
-    loop(lastT);
+
+    /* --- prefers-reduced-motion の設定変更にライブ追従(任意) ---
+       ループ内は reduceMotion を毎フレーム参照するので、フラグ更新だけで
+       通常/穏やか の描画が破綻なく切り替わる。 */
+    var mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    var onReduceChange = function (e) {
+      reduceMotion = e.matches;
+      if (reduceMotion) {
+        // 穏やかモードへ: 視差の傾きを畳んで定位置へ戻す
+        targetRX = targetRY = curRX = curRY = 0;
+        group.rotation.set(0, 0, 0);
+      }
+      syncLoop();   // 念のためループ状態を再同期
+    };
+    if (mqReduce.addEventListener) mqReduce.addEventListener("change", onReduceChange);
+    else if (mqReduce.addListener) mqReduce.addListener(onReduceChange);
+
+    startLoop();
   })();
 })();
 </script>
