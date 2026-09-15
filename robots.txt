@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://scp-tokyo.site/sitemap.xml

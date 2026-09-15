@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Noto Sans JP', 'Noto Sans CJK JP', 'Yu Gothic', sans-serif">
+  <!-- OG画像の元データ（og-image.png はこのSVGをヘッドレスChromiumで 1200x630 に描画したもの） -->
+  <defs>
+    <radialGradient id="g" cx="82%" cy="30%" r="60%">
+      <stop offset="0" stop-color="#ff5a30" stop-opacity=".55"/>
+      <stop offset=".45" stop-color="#ff5a30" stop-opacity=".12"/>
+      <stop offset="1" stop-color="#ff5a30" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="v" cx="50%" cy="-10%" r="120%">
+      <stop offset=".4" stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000" stop-opacity=".5"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#0b0a0c"/>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <rect width="1200" height="630" fill="url(#v)"/>
+  <!-- 05 Cut Mark（ページ内ロゴと同一パス） -->
+  <g transform="translate(88 78) scale(2)">
+    <g stroke="#f4efe8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <path d="M8 14 8 8 14 8"/><path d="M26 8 32 8 32 14"/><path d="M32 26 32 32 26 32"/><path d="M14 32 8 32 8 26"/>
+    </g>
+    <path d="M17 13.6 26.6 20 17 26.4Z" fill="#ff5a30"/>
+  </g>
+  <text x="188" y="136" fill="#f4efe8" font-size="40" font-weight="700" letter-spacing="3">SCP</text>
+  <text x="88" y="214" fill="#857e77" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="18" letter-spacing="6">SMART CREATIVE PROMOTION</text>
+  <text x="86" y="340" fill="#f4efe8" font-size="104" font-weight="700" letter-spacing="-3">熱量を、</text>
+  <text x="86" y="458" fill="#f4efe8" font-size="104" font-weight="700" letter-spacing="-3">届く<tspan fill="#ff5a30" font-style="italic">形</tspan>に。</text>
+  <text x="88" y="540" fill="#b8b0a8" font-size="30">若手アーティストのSNS発信支援・ショート動画制作</text>
+  <text x="88" y="586" fill="#857e77" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="20" letter-spacing="2">scp-tokyo.site</text>
+</svg>
