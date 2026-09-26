@@ -328,7 +328,7 @@
   .prob-list { display: grid; gap: 0; border-top: 1px solid var(--line); }
   .prob-item { display: grid; grid-template-columns: 44px 1fr; gap: 18px; align-items: baseline; padding: 22px 0; border-bottom: 1px solid var(--line); }
   .prob-item .no { font-family: var(--font-mono); font-size: 12px; color: var(--ember); letter-spacing: .1em; padding-top: 4px; }
-  .prob-item p { font-size: clamp(17px, 2.4vw, 23px); font-weight: 600; letter-spacing: -.01em; color: var(--ink); line-height: 1.4; }
+  .prob-item p, .prob-item h3, .price-terms h3 { font-size: clamp(17px, 2.4vw, 23px); font-weight: 600; letter-spacing: -.01em; color: var(--ink); line-height: 1.4; }
   .prob-item span { display: block; font-size: 14px; font-weight: 400; color: var(--ink-dim); margin-top: 6px; letter-spacing: 0; }
 
   /* ---------- about ---------- */
@@ -368,7 +368,7 @@
   .svc .no { font-family: var(--font-mono); font-size: 12px; letter-spacing: .12em; color: var(--ember); }
   .svc h3 { font-size: clamp(20px, 2.6vw, 27px); font-weight: 680; letter-spacing: -.02em; line-height: 1.2; }
   .svc p { color: var(--ink-mid); font-size: 14.5px; line-height: 1.7; }
-  .svc .out { margin-top: auto; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .04em; color: var(--ink-dim); padding-top: 12px; border-top: 1px solid var(--line); }
+  .svc .out, .price .out { margin-top: auto; font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .04em; color: var(--ink-dim); padding-top: 12px; border-top: 1px solid var(--line); }
   /* 質感差: 一部セルにグラデ/パターンを敷いて単調さを避ける */
   .svc-glow .svc-core { background: linear-gradient(155deg, #24121a 0%, var(--surface) 58%); }
   .svc-glow .svc-core::after { content:""; position:absolute; right:-30%; top:-40%; width:80%; height:120%; background: radial-gradient(circle, rgba(255,90,48,.30), transparent 62%); pointer-events:none; }
@@ -388,7 +388,12 @@
   .flow-body h3 { font-size: clamp(19px, 2.4vw, 25px); font-weight: 680; letter-spacing: -.02em; }
   .flow-body p { color: var(--ink-mid); font-size: 14.5px; line-height: 1.7; margin-top: 8px; max-width: 46ch; }
   .flow-note { margin-top: 34px; display: inline-flex; align-items: center; gap: 12px; font-size: 13px; color: var(--ink-dim); padding: 12px 18px; border: 1px solid var(--line); border-radius: 999px; }
-  .flow-note b { color: var(--ink); font-weight: 600; }
+  .flow-note b, .price b { color: var(--ink); font-weight: 600; }
+  /* 料金の目安（#pricing）: .prob / .prob-list / .prob-item / .svc .out / .lead / .flow-note を流用。追加はこの4行のみ */
+  .price .out { margin-top: 14px; line-height: 1.7; }
+  .price .out b { color: var(--ember); }
+  .price-terms { margin-top: clamp(36px, 4vw, 48px); }
+  .price-terms .lead { margin-top: 12px; }
 
   /* ---------- world (marquee) ---------- */
   .world { padding-block: clamp(80px,12vw,150px); overflow: hidden; }
@@ -663,6 +668,64 @@
             <div class="out">撮影あり / 撮影は原則1ロケ・半日</div>
           </div>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PRICING（料金の目安・モニター期間・確定前） =================
+       根拠: marketing/scp-pricing-design.md / marketing/scp-monitor-recruitment.md（2026-09-26 社長承認）
+       金額は確定前の目安のため、構造化データ（JSON-LD）には載せない。 -->
+  <section class="sec" id="pricing" aria-labelledby="price-h">
+    <div class="wrap prob price">
+      <div class="sec-head">
+        <p class="kicker reveal"><span class="dot">●</span>&nbsp; 料金の目安（モニター期間・確定前）</p>
+        <h2 id="price-h" class="reveal" style="--d:.06s; margin-top:18px;">いくらから、<br><em>始められる</em>か。</h2>
+        <p class="lead reveal" style="--d:.12s; margin-top:22px;">金額はすべて税込の目安で、素材と内容を確認してから、いっしょに決めます。いま募集している1〜3組は、通常より抑えたモニター価格でお受けします。撮影のないものから、小さく。</p>
+      </div>
+      <div>
+        <div class="prob-list">
+          <div class="prob-item reveal">
+            <span class="no">01</span>
+            <div>
+              <h3>素材持ち込み編集</h3>
+              <span>手持ちのスマホ動画・過去素材・ライブ映像から、SNS用のショート動画を<b>3本</b>。撮影なし。修正は各本1回まで。</span>
+              <div class="out">モニター価格 <b>2〜3万円</b>（通常 2〜5万円）／ 納期の目安 1〜2週間（素材と内容が決まってから）</div>
+            </div>
+          </div>
+          <div class="prob-item reveal" style="--d:.06s">
+            <span class="no">02</span>
+            <div>
+              <h3>ライブ映像切り抜き</h3>
+              <span>ライブ映像からフックとMCを切り出して、ショート<b>3〜5本</b>。撮影なし。修正は各本1回まで。</span>
+              <div class="out">モニター価格 <b>2〜4万円</b>（通常 2〜5万円）／ 納期の目安 1〜2週間（本数で前後）</div>
+            </div>
+          </div>
+          <div class="prob-item reveal" style="--d:.12s">
+            <span class="no">03</span>
+            <div>
+              <h3>リリース告知パック</h3>
+              <span>告知動画<b>1本</b>＋投稿文一式＋投稿スケジュール案。撮影なし、素材は持ち込み。修正は動画1回、投稿文・スケジュールは合計1回まで。</span>
+              <div class="out">モニター価格 <b>3〜5万円</b>（通常 3〜6万円）／ 納期の目安 1〜2週間（リリース日から逆算して組みます）</div>
+            </div>
+          </div>
+          <div class="prob-item reveal" style="--d:.18s">
+            <span class="no">04</span>
+            <div>
+              <h3>MV風プロモーション映像</h3>
+              <span>半日以内（目安4時間・1ロケ）の簡易撮影で、MV風の映像<b>1本</b>＋ショート<b>3本</b>。修正は各1回まで。撮影を伴うため、モニターでも別途相談になります。</span>
+              <div class="out">モニター価格 <b>5万円まで</b>（通常 7〜10万円〜）／ 納期の目安 2〜3週間（撮影後）</div>
+            </div>
+          </div>
+        </div>
+        <div class="price-terms reveal">
+          <h3>料金に含むもの / 含まないもの</h3>
+          <p class="lead"><b>含むもの。</b>内容を決めるためのヒアリング（15〜30分）。上に書いた本数の制作と回数の修正。SNS向けの尺・比率での書き出し。</p>
+          <p class="lead"><b>含まないもの。</b>決めた回数を超える修正や、構成の大きなやり直し。納品後の追加本数や、別のSNS向けの作り直し。楽曲・フォント・素材の権利処理や許諾の取得代行（ご本人の確認が前提です）。撮影プラン以外での撮影。広告費と広告アカウントの用意。そして、再生数・集客・売上の保証。</p>
+        </div>
+        <div class="flow-note reveal">
+          <span aria-hidden="true" style="color:var(--ember)">◇</span>
+          <span><b>金額は、相談のあとで決めます。</b>&nbsp;ここに書いた数字はモニター期間の目安で、まだ確定していません。上の範囲を超える場合は、始める前に必ずお伝えします。</span>
+        </div>
       </div>
     </div>
   </section>
